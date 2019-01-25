@@ -112,6 +112,7 @@ static atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
 static DEFINE_MUTEX(selinux_sdcardfs_lock);
 // ] SEC_SELINUX_PORTING_COMMON
 #ifdef CONFIG_SECURITY_SELINUX_DEVELOP
+<<<<<<< HEAD
 // [ SEC_SELINUX_PORTING_COMMON
 #if defined(CONFIG_ALWAYS_ENFORCE) && defined(CONFIG_RKP_KDP)
 RKP_RO_AREA int selinux_enforcing_boot;
@@ -119,6 +120,9 @@ RKP_RO_AREA int selinux_enforcing_boot;
 int selinux_enforcing_boot;
 #endif
 // ] SEC_SELINUX_PORTING_COMMON
+=======
+int selinux_enforcing;
+>>>>>>> d9d36ace40ca (Revert "selinux: Relocate ss_initialized and selinux_enforcing to separate 4k")
 
 static int __init enforcing_setup(char *str)
 {
