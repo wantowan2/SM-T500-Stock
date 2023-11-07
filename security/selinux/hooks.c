@@ -103,7 +103,7 @@
 #include "audit.h"
 #include "avc_ss.h"
 
-struct selinux_state selinux_state __rticdata;
+struct selinux_state selinux_state; int __rticdata;
 
 /* SECMARK reference count */
 static atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
@@ -112,34 +112,21 @@ static atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
 static DEFINE_MUTEX(selinux_sdcardfs_lock);
 // ] SEC_SELINUX_PORTING_COMMON
 #ifdef CONFIG_SECURITY_SELINUX_DEVELOP
-<<<<<<< HEAD
-// [ SEC_SELINUX_PORTING_COMMON
-#if defined(CONFIG_ALWAYS_ENFORCE) && defined(CONFIG_RKP_KDP)
-RKP_RO_AREA int selinux_enforcing_boot;
-#else
-int selinux_enforcing_boot;
-#endif
-// ] SEC_SELINUX_PORTING_COMMON
-=======
 int selinux_enforcing;
->>>>>>> d9d36ace40ca (Revert "selinux: Relocate ss_initialized and selinux_enforcing to separate 4k")
-
 static int __init enforcing_setup(char *str)
 {
 	unsigned long enforcing;
 	if (!kstrtoul(str, 0, &enforcing))
 // [ SEC_SELINUX_PORTING_COMMON
 #ifdef CONFIG_ALWAYS_ENFORCE
-		selinux_enforcing_boot = 1;
-#else
-		selinux_enforcing_boot = enforcing ? 1 : 0;
+		selinux_enforcing = 1;
 #endif
 // ] SEC_SELINUX_PORTING_COMMON
 	return 1;
 }
 __setup("enforcing=", enforcing_setup);
 #else
-#define selinux_enforcing_boot 1
+#define selinux_enforcing 1
 #endif
 
 #ifdef CONFIG_SECURITY_SELINUX_BOOTPARAM
@@ -7343,9 +7330,8 @@ static __init int selinux_init(void)
 	pr_info("SELinux:  Initializing.\n");
 
 	memset(&selinux_state, 0, sizeof(selinux_state));
-	enforcing_set(&selinux_state, selinux_enforcing_boot);
+	enforcing_set(&selinux_state, selinux_enforcing);
 	selinux_state.checkreqprot = selinux_checkreqprot_boot;
-	selinux_ss_init(&selinux_state.ss);
 	selinux_avc_init(&selinux_state.avc);
 
 	/* Set the security state for the initial task. */
@@ -7379,7 +7365,7 @@ static __init int selinux_init(void)
 		selinux_enforcing_boot = 1;
 #endif
 // ] SEC_SELINUX_PORTING_COMMON
-	if (selinux_enforcing_boot)
+	if (selinux_enforcing)
 		pr_debug("SELinux:  Starting in enforcing mode\n");
 	else
 		pr_debug("SELinux:  Starting in permissive mode\n");
