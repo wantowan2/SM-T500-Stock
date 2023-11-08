@@ -2652,7 +2652,7 @@ static void __gsi_read_channel_scratch(unsigned long chan_hdl,
 static union gsi_channel_scratch __gsi_update_mhi_channel_scratch(
 	unsigned long chan_hdl, struct gsi_mhi_channel_scratch mscr)
 {
-	union __packed gsi_channel_scratch scr;
+	union gsi_channel_scratch scr;
 
 	/* below sequence is not atomic. assumption is sequencer specific fields
 	 * will remain unchanged across this sequence
